@@ -9,13 +9,15 @@ cap = cv.VideoCapture(0) # initializing the webcam, 0 means the first webcam whi
 handSolution = mp.solutions.hands # allows us to use the hand tracking model
 hands = handSolution.Hands() # initilizing the hand tracking model
 mp_draw = mp.solutions.drawing_utils # drawing the landmarks on the hand, don't have it right now but will be used later
-password_array = [] # array to store the hand gestures
-finger_tips = [4 , 8, 12, 16, 20] # the id of the finger tips, 4 is for the thumb, 8 is for the index finger, 12 is for the middle finger, 16 is for the ring finger, 20 is for the pinky finger
+password_array = [] # array to store the users created password with gestures
+finger_tips = [4 , 8, 12, 16, 20] # the id of the 5 finger tips, 4 is for the tip of the thumb, 8 is for the tip of the index finger, 12 is for the tip of  middle finger,
+# 16 is for the tip of the ring finger, 20 is for the tip of the pinky finger
 
-def finger_tracking(landmarkers):
+def finger_tracking(landmarkers): # this function is checking which fingers are up and which are down
      current_finger_status = [] # array to store the status of each finger, 1 means the finger is open and up, 0 means the finger is closed (almost like making a fist)
-     landmarks = landmarkers.landmark # extracting the landmarks of the hand
+     landmarks = landmarkers.landmark # extracting all the 21 landmark points
      
+     #so since the thumb is different from the other fingers, meaning doing a [1, 1, 1, 1, 1] gesture, then the thumb is on its side
      if landmarks[finger_tips[0]].x > landmarks[finger_tips[0] - 1].x:
         current_finger_status.append(1)
      else:
