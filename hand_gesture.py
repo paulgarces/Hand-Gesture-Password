@@ -31,7 +31,8 @@ while True: # while the camera is open (true)...
                     # datapoint_id is the id of the point, ex 0 is for the wrist, 1 is for the thumb, 2 is for the index finger, etc.
                     h, w, c = frame.shape # gets the height, width, and channel of the frame
                     x, y = int(point.x * w), int(point.y * h) # converting the x and y coordinates of the point to the actual pixel values
-                    cv.circle(frame, (x, y), 5, (255, 0, 255), cv.FILLED) # drawing a circle at the x and y coordinates of the point
+                    mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS) # drawing the connections between the points on the hand
+                    cv.circle(frame, (x, y), 10, (255, 0, 255), cv.FILLED) # drawing a circle at the x and y coordinates of the point
     cv.imshow('frame', frame) # displaying the frame with the points on it
     if cv.waitKey(1) == ord('q'): # if user presses 'q' then it will break and exit
         break
