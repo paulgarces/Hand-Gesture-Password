@@ -109,7 +109,8 @@ while True:
     if results.multi_hand_landmarks:
         for hand in results.multi_hand_landmarks:
             mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS)
-            gesture = finger_tracking(hand) # storing an array of the current gestures, as in which fingers are up and which are down
+            gesture = finger_tracking(hand) # "Hey, MediaPipe just detected a hand. Let's figure out which fingers are up or down by feeding that hand into finger_tracking(), and then store the result as gesture."
+            # the gesture is then used: to show on screen and to save into password_array when the user presses 's'
             cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, like actually printing it on the frame as before
 
             # if the user presses 's' then it will save the gesture, but only if the length of the input sequence is less than 3
