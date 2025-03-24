@@ -1,6 +1,6 @@
-# ✋ Hand Gesture Password
+# ✋ Hand Gesture Password with Multi-User Login
 
-This project is a computer vision-based password system that allow you to use **hand gestures** as your authentication method. Using your webcame, the program captures a sequence of three custom gestures, then verifies that same sequence later to "log you in". If the login is successful, it opens an application: in this case, **Spotify**
+This project is a computer vision-based password system that allows users to authenticate themselves using **hand gestures**. It uses your webcam to record a sequence of three custom gestures per user and verifies the same sequence later to allow access. If login is successful, the program allows the user to **open any app** of their choice (via terminal input).
 
 ---
 
@@ -12,88 +12,104 @@ This project uses the following Python libraries:
 - **opencv-python (cv2)** – for webcam access and video frame handling
 - **mediapipe** – for real-time hand landmark detection
 - **time** – for managing timed instructions
-- **os** – for launching external applications (like Spotify)
+- **os** – for launching external applications
+- **json** – for saving each user's gesture-based password locally
 
 ---
 
-## 🔁 The Process
+## 🔁 How It Works
 
-**a. Hand Tracking and Finger Status Detection** 
-- The code initializes the webcam (`cv.VideoCapture(0)`) and sets up MediaPipe’s hand tracking model.
- - **MediaPipe** detects up to 21 landmark points for each detected hand.
- - A helper function, `finger_tracking()`, examines these landmarks:
-    - For the thumb, it checks if the thumb tip (landmark 4) is sufficiently to the right of its adjacent joint (landmark 3) using a small buffer.
-    - For the other fingers (index, middle, ring, pinky), it compares the vertical position of the fingertip to a corresponding knuckle (PIP joint) with a tolerance.
-    - This function returns a list (for example, `[1, 0, 1, 1, 1]`), where each element represents the status of each finger:
-        - **1** means the finger is extended/up
-        - **0** means the finger is down/closed
+### a. Multi-User Login with Gesture Password
+- At the start, the user is prompted to enter their name.
+- Based on the name, the program looks for a corresponding JSON file (e.g., `paul_gesture_password.json`).
+- If the file exists, it loads the user’s saved gesture password for login.
+- If it doesn’t, it prompts the user to create a new password using 3 custom gestures.
 
-**b. Password Creation Phase**
-- When the program starts, the user sees a live webcam feed with on-screen instructions:
-    - "Enter 3 gestures to create a password. Please press 's' after each gesture."
-- The program processes each frame:
-    - It converts the captured frame to RGB for MediaPipe.
-    - If a hand is detected, it draws the landmarks (the points and the connections) on the hand.
-    - The `finger_tracking()` function is called to generate the current gesture (e.g., `[1, 0, 1, 1, 1]`).
-    - This gesture is overlaid on the screen for the user to see.
-- When the user presses the **'s'** key, the current gesture is saved to a global list called   `password_array`.
-    - The system allows only 3 gestures to be saved.
-    - After each saved gesture, a confirmation message such as “Gesture saved” is displayed.
-- Once 3 gestures are saved (or if the user quits by pressing **'q'**), the capture stops.
+### b. Hand Tracking and Gesture Detection
+- MediaPipe tracks 21 hand landmarks from the webcam input.
+- A custom `finger_tracking()` function identifies whether each finger (thumb, index, middle, ring, pinky) is **up** or **down**:
+    - Thumb: checks the x-position difference.
+    - Other fingers: check the y-position difference between fingertip and knuckle.
+- The result is a binary array like `[1, 0, 1, 1, 1]` representing the current gesture.
 
-**c. Login Verification Phase**
-- After password creation, the system enters the login phase.
-- The webcam reopens, and the user is instructed:
-    - "Enter your 3 gestures to login. Please press 's' after each gesture."
-- The process is similar:
-    - The program captures frames and detects the hand.
-    - For each detected hand, it calculates the current gesture and displays it.
-    - The user presses **'s'** to save each gesture into an `input_sequence` list.
-- When 3 gestures are captured (or the user presses **'q'**), the system compares   `input_sequence` (the login gesture) with `password_array` (the saved password).
-    - If they match, the result “Access Granted” is shown (in green); otherwise, “Access Denied” (in red).
+### c. Password Setup Phase (only once per user)
+- If it’s a new user, the system opens the webcam and prompts:
+    - "Enter 3 gestures to create a password. Press 's' after each gesture."
+- After each saved gesture, a message "Gesture saved" is shown.
+- When 3 gestures are recorded, they’re saved as a `.json` file with the user’s name.
 
-**d. Application Launch**
-- If the login is successful (i.e., the entered gesture sequence exactly matches the saved password), the program launches Spotify using a system command (**you can change the section below in the code to open any application or folder/file**):
-    - `os.system("open /Applications/Spotify.app")` (This command is tailored for macOS.)
+### d. Login Phase
+- The webcam reopens and asks the user to re-enter their 3 gestures (same order).
+- The user presses **'s'** to capture each gesture.
+- The captured login gestures are compared to the saved ones.
+- If they match → “Access Granted” (green).
+- If not → “Access Denied” (red).
+
+### e. Application Launcher
+- If login is successful, the user can open any application by typing its name:
+    - For example: `Spotify`, `Notes`, `Calendar`, etc.
+- The user types `'exit'` to end the session.
 
 ---
 
-# ❓ How to Use?
-1. Run the Script:
-    - Ensure your webcam is connected and the necessary packages are installed.
-    - Run the Python script from your terminal or your preferred IDE (such as VS Code).
+## ❓ How to Use
 
-2. Set Up Your Password:
-    - The webcam window titled **"Gesture Setup"** will open.
-    - Follow the on-screen instructions (visible for 5 seconds):
-        - "Enter 3 gestures to create a password. Please press 's' after each gesture."
-    - Position your right hand in front of the camera. When a hand is detected, the system shows the current gesture (a list of 1s and 0s).
-    - Press **'s'** to save each gesture. You must save 3 gestures. A “Gesture saved” message will appear after each save.
-    - You can press **'q'** to exit early (but then you won't have a complete password).
+### 1. Run the Script
+- Make sure you’ve installed the dependencies:
+  ```bash
+  pip install numpy opencv-python mediapipe
+  ```
+- Run the Python script from your terminal:
+  ```bash
+  python hand_gesture.py
+  ```
 
-3. Login Phase:
-    - After the password is set, the webcam reopens in a new window titled **"Login"**.
-    - You’ll see an instruction on screen (for about 5 seconds):
-        - "Enter your 3 gestures to login. Please press 's' after each gesture."
-    - Repeat the same 3 gestures in the same order.
-    - Press **'s'** after each gesture to capture them.
-    - When 3 gestures are captured, the system compares your input to the saved password.
+### 2. If You’re a New User
+- You’ll be asked to enter your name.
+- The webcam window titled **"Gesture Setup"** will open.
+- Perform a hand gesture and press **'s'** to save — do this 3 times.
+- Your gesture password is saved locally in a JSON file (e.g., `alex_gesture_password.json`).
 
-4. Result & App Launch:
-    - The result (either “Access Granted” or “Access Denied”) is displayed on screen for 500 milliseconds.
-    - If access is granted, Spotify will launch automatically.
+### 3. If You’re a Returning User
+- Enter the same name again when prompted.
+- The webcam window titled **"Login"** will open.
+- Repeat the same 3 gestures and press **'s'** after each.
+- If they match your saved password, you’ll get access.
+
+### 4. Launch an App
+- Once logged in, type the name of the app to open it.
+    - Example: `Spotify`, `Notes`, `System Preferences`
+- Type `'exit'` to end the session.
 
 ---
 
-# 💭 Future Directions and Ideas
-- Change the Launched Application:
-    - Modify the system command at the end to launch any app of your choice.
+## 💡 Features and Ideas to Extend
 
-- Improve the UI:
-    - Enhance the on-screen instructions or add additional feedback using OpenCV’s drawing functions.
+- **🔐 User-specific Gesture Passwords**
+    - Each user’s password is stored as `username_gesture_password.json`
+- **🔄 Retry or Reset Option**
+    - Add an option to retry login or reset password
+- **🖥️ Custom Dashboard**
+    - Instead of terminal input, create a graphical dashboard
+- **📁 File Access Control**
+    - Use gestures to unlock access to personal folders or files
 
-- Persistent Password Storage:
-    - Save the password_array to a file (using JSON) so the password persists between sessions.
+---
 
-- Retry Mechanism:
-    - Add a mechanism to allow multiple login attempts or lock out after too many failed attempts.
+## ✅ Example
+
+```
+Enter your name: alice
+Gesture Setup window opens
+→ Press 's' for 3 custom gestures → Password saved as `alice_gesture_password.json`
+
+Next time:
+Enter your name: alice
+Login window opens
+→ Do same 3 gestures → Access Granted
+→ Enter app name: Spotify → Spotify opens
+```
+
+---
+
+This project shows how creative computer vision and user interaction can be — gesture-based authentication is just the beginning!
