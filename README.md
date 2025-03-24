@@ -41,4 +41,59 @@ This project uses the following Python libraries:
     - After each saved gesture, a confirmation message such as “Gesture saved” is displayed.
 - Once 3 gestures are saved (or if the user quits by pressing **'q'**), the capture stops.
 
+**c. Login Verification Phase**
+- After password creation, the system enters the login phase.
+- The webcam reopens, and the user is instructed:
+    - "Enter your 3 gestures to login. Please press 's' after each gesture."
+- The process is similar:
+    - The program captures frames and detects the hand.
+    - For each detected hand, it calculates the current gesture and displays it.
+    - The user presses **'s'** to save each gesture into an `input_sequence` list.
+- When 3 gestures are captured (or the user presses **'q'**), the system compares   `input_sequence` (the login gesture) with `password_array` (the saved password).
+    - If they match, the result “Access Granted” is shown (in green); otherwise, “Access Denied” (in red).
 
+**d. Application Launch**
+- If the login is successful (i.e., the entered gesture sequence exactly matches the saved password), the program launches Spotify using a system command:
+    - `os.system("open /Applications/Spotify.app")` (This command is tailored for macOS.)
+
+---
+
+# ❓ How to Use?
+1. Run the Script:
+    - Ensure your webcam is connected and the necessary packages are installed.
+    - Run the Python script from your terminal or your preferred IDE (such as VS Code).
+
+2. Set Up Your Password:
+    - The webcam window titled **"Gesture Setup"** will open.
+    - Follow the on-screen instructions (visible for 5 seconds):
+        - "Enter 3 gestures to create a password. Please press 's' after each gesture."
+    - Position your right hand in front of the camera. When a hand is detected, the system shows the current gesture (a list of 1s and 0s).
+    - Press **'s'** to save each gesture. You must save 3 gestures. A “Gesture saved” message will appear after each save.
+    - You can press **'q'** to exit early (but then you won't have a complete password).
+
+3. Login Phase:
+    - After the password is set, the webcam reopens in a new window titled **"Login"**.
+    - You’ll see an instruction on screen (for about 5 seconds):
+        - "Enter your 3 gestures to login. Please press 's' after each gesture."
+    - Repeat the same 3 gestures in the same order.
+    - Press **'s'** after each gesture to capture them.
+    - When 3 gestures are captured, the system compares your input to the saved password.
+
+4. Result & App Launch:
+    - The result (either “Access Granted” or “Access Denied”) is displayed on screen for 500 milliseconds.
+    - If access is granted, Spotify will launch automatically.
+
+---
+
+# 💭 Future Directions and Ideas
+- Change the Launched Application:
+    - Modify the system command at the end to launch any app of your choice.
+
+- Improve the UI:
+    - Enhance the on-screen instructions or add additional feedback using OpenCV’s drawing functions.
+
+- Persistent Password Storage:
+    - Save the password_array to a file (using JSON) so the password persists between sessions.
+
+- Retry Mechanism:
+    - Add a mechanism to allow multiple login attempts or lock out after too many failed attempts.
