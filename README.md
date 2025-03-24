@@ -107,8 +107,6 @@ This project uses the following Python libraries:
 
 ## 💡 Features and Ideas to Extend
 
-- **🔐 User-specific Gesture Passwords**
-    - Each user’s password is stored as `username_gesture_password.json`
 - **🔄 Retry or Reset Option**
     - Add an option to retry login or reset password
 - **🖥️ Custom Dashboard**
