@@ -11,16 +11,17 @@ cap = cv.VideoCapture(0) # initializing the webcam, 0 means the first/default we
 handSolution = mp.solutions.hands # allows us to use the hand tracking model
 hands = handSolution.Hands() # initilizing the hand tracking model
 mp_draw = mp.solutions.drawing_utils # drawing the landmarks on the hand, don't have it right now but will be used later
-password_array = [] # array to store the users created password with gestures
+password_array = [] # array to store the 3 gestures that users did to set up their password (when they press 's' for a gesture), it will look like this: [[1, 0, 1, 1, 1], [0, 1, 1, 0, 1], [1, 1, 1, 1, 1]], will be used to validate password
 finger_tips = [4 , 8, 12, 16, 20] # the id of the 5 finger tips, 4 is for the tip of the thumb, 8 is for the tip of the index finger, 12 is for the tip of  middle finger,
 # 16 is for the tip of the ring finger, 20 is for the tip of the pinky finger
 
-def finger_tracking(landmarkers): # this function is checking which fingers are up and which are down
-     current_finger_status = [] # array to store the status of each finger, 1 means the finger is open and up, 0 means the finger is closed (almost like making a fist)
+def finger_tracking(landmarkers): # this function is checking which fingers are up and which are down and will return a list
+     current_finger_status = [] # list to store the status of each finger in the current frame/one gesture, 1 means the finger is open and up, 0 means the finger is closed (almost like making a fist)
      landmarks = landmarkers.landmark # extracting all the 21 landmark points
      
-     #so since the thumb is different from the other fingers, meaning doing a [1, 1, 1, 1, 1] gesture, then the thumb is on its side
+     # so since the thumb is different from the other fingers, meaning doing a [1, 1, 1, 1, 1] gesture, then the thumb is on its side
      # so for the right hand, if the the thumb tip is further to the right than #3 (thumb_ip) then the thumb is up
+     # the value/status of the thumb from this check below is stored to the current_finger_status array
      if landmarks[finger_tips[0]].x > landmarks[finger_tips[0] - 1].x - 0.01:
         current_finger_status.append(1)
      else:
@@ -28,6 +29,7 @@ def finger_tracking(landmarkers): # this function is checking which fingers are 
 
     # this is for the rest of the fingers, index (#8), middle (#12), ring (#16), and pinky (#20) (1-5 since we're not including the thumb)
     # since these fingers are vertical, if the tip of the finger is higher (y value) than the fingers PIP (knuckle), then the finger is up (1), if not, then finger is down (0)
+    # the value/status of the fingers from this check below is stored to the current_finger_status array
      for i in range(1, 5):
           if landmarks[finger_tips[i]].y < landmarks[finger_tips[i] - 2].y - 0.05:
             current_finger_status.append(1)
@@ -57,21 +59,21 @@ while True: # while the camera is open (true)...
     rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB) # converting the frame to RGB since apparantly mediapipe only accepts RGB images
     results = hands.process(rgb_frame) # this takes and passes the frame which was converted to RGB to the hand tracking model
     # frame is the actual image
-    if time.time() - start_time < instruction_time: # if the current time minus the start time is less than the instruction time, then it will display the instructions
-        cv.putText(frame, "Enter 3 gestures to create a password. Please press 's' after each gesture", (10, 80), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2) # displaying the instructions on the actual frame
+    if time.time() - start_time < instruction_time: # if it's still within the first 5 seconds since the app started, the start_time variable, then the instructions will be shown
+        cv.putText(frame, "Enter 3 gestures to create a password. Please press 's' after each gesture", (10, 80), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2) # displaying the instructions on the actual frame for 5 seconds based on condition above
 
-
-    if results.multi_hand_landmarks: # checking if any hands were detected
+    if results.multi_hand_landmarks: # checking if any hands were detected, if so, then it will return the landmarks of the detected hands
         for hand in results.multi_hand_landmarks: # looping through each hand that was detected
-            mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS) # drawing the connections between the points on the hand
-            gesture = finger_tracking(hand) # getting the status/list of which fingers are up and which one arent
+            mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS) # drawing the connections and the dots on the hand
+            gesture = finger_tracking(hand) # calling the finger_tracking function and returns status of one gesture, like [1, 0, 1, 1, 1]
+            # |_> "Here’s a hand I just detected, run it through my finger_tracking function and get the current gesture"
             cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, e.g. "Gesture: [1, 0, 1, 1, 1]"
-            key = cv.waitKey(1) & 0xFF
+            key = cv.waitKey(1) & 0xFF # waits 1 millisecond for the user to press a key, and stores the key value in the key variable
             if key == ord('s') and len(password_array) < 3: # if user presses 's' and haven't saved 3 gestures then it will save the current gesture and show "gesture saved" on the frame
-                password_array.append(gesture)
-                cv.putText(frame, "Gesture saved", (10, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2) # displays "Gesture saved" on the frame
-                cv.imshow('Gesture Setup', frame) # displays the frame with the gesture saved message
-                cv.waitKey(500) # waits for 500 milliseconds before moving on to the next frame
+                password_array.append(gesture) # appends the current gesture to the password array after clicking 's'
+                cv.putText(frame, "Gesture saved", (10, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2) # displays "Gesture saved" on the frame, giving a confirmation that the gesture was saved
+                cv.imshow('Gesture Setup', frame) # shows hand landmarks, current gesture, and any overlayed text.
+                cv.waitKey(500) #  pauses for 500 milliseconds to avoid double saves from quick presses of 's'.
     cv.imshow('Gesture Setup', frame) # opens the webcam, shows the hand landmarks, and the current gesture on the screen
     key = cv.waitKey(1) & 0xFF
     if key == ord('q') or len(password_array) == 3: # if the user presses 'q' or the length of the password array is 3, then it will break and exit the loop
@@ -116,7 +118,7 @@ while True:
                 input_sequence.append(gesture)
                 cv.putText(frame, "Gesture saved for login", (10, 130), cv.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2) # displaying "Gesture saved" on the frame
                 cv.imshow('Login', frame) # displaying the login window
-                cv.waitKey(1) # waits for 1 millisecond before moving on to the next frame
+                cv.waitKey(500) # waits for 500 milliseconds to avoid double saves from quick presses of 's'
     cv.imshow('Login', frame) # opens the webcam, shows the hand landmarks, and the current gesture on the screen
 
     # Quit login phase if enough (3) gestures or user presses q
@@ -134,7 +136,7 @@ ret, frame = cap.read() # start the webcam again and show a single frame with th
 if ret:
     cv.putText(frame, result_show, (10, 100), cv.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
     cv.imshow("Result", frame)
-    cv.waitKey(3000)
+    cv.waitKey(500) # waits for 500 milliseconds before closing the window
 
 cap.release()
 cv.destroyAllWindows()
