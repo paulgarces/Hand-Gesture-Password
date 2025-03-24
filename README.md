@@ -68,6 +68,7 @@ This project uses the following Python libraries:
 - You’ll be asked to enter your name.
 - The webcam window titled **"Gesture Setup"** will open.
 - Perform a hand gesture and press **'s'** to save — do this 3 times.
+- This will then lead you to the **Login** window to re-enter the password, which will allow you access.
 - Your gesture password is saved locally in a JSON file (e.g., `alex_gesture_password.json`).
 
 ### 3. If You’re a Returning User
