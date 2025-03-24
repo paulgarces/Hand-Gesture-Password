@@ -7,6 +7,7 @@ This project is a computer vision-based password system that allows users to aut
 ## 🔍 Project Motivation
 
 While using hand gestures as a password to open apps might not serve a real-world security purpose in its current form, this project is an exploratory dive into gesture recognition using computer vision.
+
 The goal was to:
 - Experiment with **gesture-based authentication logic**
 - Learn how to combine **MediaPipe, OpenCV, and real-time hand tracking**
