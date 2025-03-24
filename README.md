@@ -4,6 +4,25 @@ This project is a computer vision-based password system that allows users to aut
 
 ---
 
+## 🔍 Project Motivation
+
+While using hand gestures as a password to open apps might not serve a real-world security purpose in its current form, this project is an exploratory dive into gesture recognition using computer vision.
+The goal was to:
+- Experiment with **gesture-based authentication logic**
+- Learn how to combine **MediaPipe, OpenCV, and real-time hand tracking**
+- Understand the challenges behind translating physical movement into digital verification
+This system acts as a **proof of concept** that opens up the door to more practical applications down the road — like gesture control for smart mirrors, interactive installations, or personalized device access.
+
+---
+
+## ⚠️ Notes & Limitations
+
+- Due to macOS security restrictions, the project couldn’t automatically interact with system-level apps as easily as on Windows (e.g., opening apps using full paths or requiring permission prompts).
+- This meant app launching was kept simple using terminal commands and may not behave consistently across different macOS versions or user settings.
+- Additionally, this implementation doesn’t include spoofing protection, encryption, or robustness against poor lighting or hand placement — it’s not production-grade security, but a learning tool for how gesture-based systems could work.
+
+---
+
 ## 📦 Dependencies
 
 This project uses the following Python libraries:
