@@ -100,15 +100,17 @@ This project uses the following Python libraries:
 ## ✅ Example
 
 ```
-Enter your name: alice
+Enter your name in the terminal: alice
 Gesture Setup window opens
 → Press 's' for 3 custom gestures → Password saved as `alice_gesture_password.json`
+→ This will lead to the Login window
+    → Enter the password again
 
 Next time:
-Enter your name: alice
+Enter your name in the terminal : alice
 Login window opens
 → Do same 3 gestures → Access Granted
-→ Enter app name: Spotify → Spotify opens
+→ Enter app name in the terminal: Spotify → Spotify opens
 ```
 
 ---
