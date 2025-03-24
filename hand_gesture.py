@@ -1,12 +1,13 @@
 # Paul Garces Hand Gesture Password
 
+# downloading all the packages necessary for this project to work 
 import numpy as np
 import cv2 as cv
 import mediapipe as mp
 import time
 import os
 
-cap = cv.VideoCapture(0) # initializing the webcam, 0 means the first webcam which in this case is the laptop's webcam
+cap = cv.VideoCapture(0) # initializing the webcam, 0 means the first/default webcam which in this case is the laptop's webcam
 handSolution = mp.solutions.hands # allows us to use the hand tracking model
 hands = handSolution.Hands() # initilizing the hand tracking model
 mp_draw = mp.solutions.drawing_utils # drawing the landmarks on the hand, don't have it right now but will be used later
@@ -25,7 +26,7 @@ def finger_tracking(landmarkers): # this function is checking which fingers are 
      else:
         current_finger_status.append(0)
 
-    # this is for the rest of the fingers, index, middle, ring, and pinky (1-5 since we're not including the thumb)
+    # this is for the rest of the fingers, index (#8), middle (#12), ring (#16), and pinky (#20) (1-5 since we're not including the thumb)
     # since these fingers are vertical, if the tip of the finger is higher (y value) than the fingers PIP (knuckle), then the finger is up (1), if not, then finger is down (0)
      for i in range(1, 5):
           if landmarks[finger_tips[i]].y < landmarks[finger_tips[i] - 2].y - 0.05:
@@ -33,7 +34,7 @@ def finger_tracking(landmarkers): # this function is checking which fingers are 
           else:
             current_finger_status.append(0)
      return current_finger_status
-    #added buffeeers to each of the checks to make sure the model isn't too sensitive
+    # added buffers to each of the checks to make sure the model isn't too sensitive, like shaking or moving the hand too much
     # adds the state of the fingers to the current_finger_status array and returns it
     # this is all done and checked visually
 
@@ -43,6 +44,7 @@ if not cap.isOpened():
     print("Cannot open camera")
     exit()
 print("Press 's' to save gesture (max 3 gestures) and 'q' to quit")
+
 start_time = time.time() # getting the current time when the program starts
 instruction_time = 5 # this is setting up the amount of time that the user has to read the instructions, in this case 5 seconds
 while True: # while the camera is open (true)...
@@ -63,10 +65,10 @@ while True: # while the camera is open (true)...
         for hand in results.multi_hand_landmarks: # looping through each hand that was detected
             mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS) # drawing the connections between the points on the hand
             gesture = finger_tracking(hand) # getting the status/list of which fingers are up and which one arent
-            cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, ex "Gesture: [1, 0, 1, 1, 1]"
+            cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, e.g. "Gesture: [1, 0, 1, 1, 1]"
             key = cv.waitKey(1) & 0xFF
-            if key == ord('s') and len(password_array) < 3: # if user presses 's' then it will save the gesture
-                password_array.append(gesture) # adds the gesture to the password array
+            if key == ord('s') and len(password_array) < 3: # if user presses 's' and haven't saved 3 gestures then it will save the current gesture and show "gesture saved" on the frame
+                password_array.append(gesture)
                 cv.putText(frame, "Gesture saved", (10, 120), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2) # displays "Gesture saved" on the frame
                 cv.imshow('Gesture Setup', frame) # displays the frame with the gesture saved message
                 cv.waitKey(500) # waits for 500 milliseconds before moving on to the next frame
@@ -83,10 +85,10 @@ cv.destroyAllWindows() # closes the popup window
 
 input_sequence = [] # creating an array to store the gestures that the user will input during the login phase, will be usede to compare against the password array that was created previously
 cap = cv.VideoCapture(0) # initializing the webcam again
-login_instruct_show = False
+login_instruct_show = False # a flag to show the login instructions for a short time
 login_time = time.time() # getting the current time when the program starts
 
-#capuring the frames from the webcame again
+#capuring the frames from the webcame again, if the frame is not received, then it will break and exit the loop
 while True:
     ret, frame = cap.read()
     if not ret:
@@ -97,7 +99,7 @@ while True:
     results = hands.process(rgb_frame) # sending the frame to the hand tracking model
 
     if not login_instruct_show and time.time() - login_time < instruction_time: # if the login instructions haven't been shown and the time is less than the instruction time, then it will display the instructions
-        cv.putText(frame, "Enter your 3 gestures to login. Please press 's' after each gesture", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2) # displaying the instructions on the frame
+        cv.putText(frame, "Enter your 3 gestures to login. Please press 's' after each gesture", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2) # displaying the instructions on the frame for 5 seconds
     else:
         login_instruct_show = True
 
@@ -106,29 +108,29 @@ while True:
         for hand in results.multi_hand_landmarks:
             mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS)
             gesture = finger_tracking(hand) # storing an array of the current gestures, as in which fingers are up and which are down
-            cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, like actually printing it on the frame
+            cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, like actually printing it on the frame as before
 
             # if the user presses 's' then it will save the gesture, but only if the length of the input sequence is less than 3
             key = cv.waitKey(1) & 0xFF
-            if key == ord('s') and len(input_sequence) < 3:
+            if key == ord('s') and len(input_sequence) < 3: # once again, if the user presses 's' and the length of the input sequence is less than 3, then it will save the currrent gesture
                 input_sequence.append(gesture)
                 cv.putText(frame, "Gesture saved for login", (10, 130), cv.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2) # displaying "Gesture saved" on the frame
-                cv.imshow('Login', frame) # displaying the frame with the gesture saved message
+                cv.imshow('Login', frame) # displaying the login window
                 cv.waitKey(1) # waits for 1 millisecond before moving on to the next frame
     cv.imshow('Login', frame) # opens the webcam, shows the hand landmarks, and the current gesture on the screen
 
-    # Quit login phase if enough gestures or user presses q
+    # Quit login phase if enough (3) gestures or user presses q
     if len(input_sequence) == 3 or cv.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
-cv.destroyAllWindows()
+cv.destroyAllWindows() # stop webcam feed and close the popup window
 
 result_show = "Acceess Granted" if input_sequence == password_array else "Access Denied" # if the input sequence is equal to the password array, then it will print "Access Granted", if not, then it will print "Access Denied"
 color = (0, 255, 0) if input_sequence == password_array else (0, 0, 255) # if the input sequence is equal to the password array, then it will be green, if not, then it will be red
 
 cap = cv.VideoCapture(0)
-ret, frame = cap.read()
+ret, frame = cap.read() # start the webcam again and show a single frame with the result
 if ret:
     cv.putText(frame, result_show, (10, 100), cv.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
     cv.imshow("Result", frame)
@@ -137,5 +139,5 @@ if ret:
 cap.release()
 cv.destroyAllWindows()
 
-if "Granted" in result_show:
+if "Granted" in result_show: # if the result contains "Granted" then it will launch spotify
     os.system("open /Applications/Spotify.app")
