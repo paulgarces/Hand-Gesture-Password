@@ -1,4 +1,5 @@
-# Paul Garces Hand Gesture Password
+# Paul Garces 
+# A Hand Gesture Password project
 
 # downloading all the packages necessary for this project to work 
 import numpy as np
