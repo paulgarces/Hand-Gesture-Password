@@ -53,7 +53,7 @@ This project uses the following Python libraries:
     - If they match, the result “Access Granted” is shown (in green); otherwise, “Access Denied” (in red).
 
 **d. Application Launch**
-- If the login is successful (i.e., the entered gesture sequence exactly matches the saved password), the program launches Spotify using a system command:
+- If the login is successful (i.e., the entered gesture sequence exactly matches the saved password), the program launches Spotify using a system command (you can change the section below in the code to open any application or folder/file):
     - `os.system("open /Applications/Spotify.app")` (This command is tailored for macOS.)
 
 ---
