@@ -18,17 +18,23 @@ def finger_tracking(landmarkers): # this function is checking which fingers are 
      landmarks = landmarkers.landmark # extracting all the 21 landmark points
      
      #so since the thumb is different from the other fingers, meaning doing a [1, 1, 1, 1, 1] gesture, then the thumb is on its side
-     if landmarks[finger_tips[0]].x > landmarks[finger_tips[0] - 1].x:
+     # so for the right hand, if the the thumb tip is further to the right than #3 (thumb_ip) then the thumb is up
+     if landmarks[finger_tips[0]].x > landmarks[finger_tips[0] - 1].x - 0.01:
         current_finger_status.append(1)
      else:
         current_finger_status.append(0)
-        
+
+    # this is for the rest of the fingers, index, middle, ring, and pinky (1-5 since we're not including the thumb)
+    # since these fingers are vertical, if the tip of the finger is higher (y value) than the fingers PIP (knuckle), then the finger is up (1), if not, then finger is down (0)
      for i in range(1, 5):
           if landmarks[finger_tips[i]].y < landmarks[finger_tips[i] - 2].y - 0.05:
             current_finger_status.append(1)
           else:
             current_finger_status.append(0)
      return current_finger_status
+    #added buffeeers to each of the checks to make sure the model isn't too sensitive
+    # adds the state of the fingers to the current_finger_status array and returns it
+    # this is all done and checked visually
 
 # Checking if the camera is opened successfully
 # if the camera is not opened successfully, then it will print "Cannot open camera" and exit
@@ -38,7 +44,7 @@ if not cap.isOpened():
 print("Press 's' to save gesture (max 3 gestures) and 'q' to quit")
 while True: # while the camera is open (true)...
     #› ...this is capturing frame by frame continuously in a loop until the user presses 'q' to quit and exit the program
-    ret, frame = cap.read() # ret is a boolean variable that returns true if the frame is available and captured, the frame actually stores the frames/images
+    ret, frame = cap.read() # ret is a boolean variable that returns true if the frame was read sucessfully, the frame actually stores the frames/images
     if not ret: # if frame wasn't received, then break and exit
         print("Can't receive frame (stream end?). Exiting")
         break
@@ -49,18 +55,16 @@ while True: # while the camera is open (true)...
     if results.multi_hand_landmarks: # checking if any hands were detected
         for hand in results.multi_hand_landmarks: # looping through each hand that was detected
             mp_draw.draw_landmarks(frame, hand, handSolution.HAND_CONNECTIONS) # drawing the connections between the points on the hand
-            gesture = finger_tracking(hand) # getting the status of each finger
-                    # point is the position of each of the 21 points on the hand
-                    # datapoint_id is the id of the point, ex 0 is for the wrist, 1 is for the thumb, 2 is for the index finger, etc.
-            cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame
+            gesture = finger_tracking(hand) # getting the status/list of which fingers are up and which one arent
+            cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) # displaying the gesture on the frame, ex "Gesture: [1, 0, 1, 1, 1]"
             key = cv.waitKey(1) & 0xFF
             if key == ord('s') and len(password_array) < 3: # if user presses 's' then it will save the gesture
                 if len(password_array) < 3: # if the length of the password array is less than 3, then it will append the gesture to the password array
-                    password_array.append(gesture)
+                    password_array.append(gesture) # adds the gesture to the password array
                     print("Gesture saved")
                 else: # if the length of the password array is greater than or equal to 3, then it will print "Max gestures saved"
                     key = cv.waitKey(1) & 0xFF
-    cv.imshow('Gesture Setup', frame) # displaying the frame with the points on it
+    cv.imshow('Gesture Setup', frame) # displaying the frame, landmarks, and gesture info on the screen
     if cv.waitKey(1) & 0xFF == ord('q'): # if user presses 'q' then it will break and exit
         break
 # When everything done, release the capture
