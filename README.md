@@ -46,9 +46,9 @@ This project uses the following Python libraries:
 - If not → “Access Denied” (red).
 
 ### e. Application Launcher
-- If login is successful, the user can open any application by typing its name:
+- If login is successful, the user can open any application by typing its name in the terminal:
     - For example: `Spotify`, `Notes`, `Calendar`, etc.
-- The user types `'exit'` to end the session.
+- The user types `'exit'`  in the terminal to end the session.
 
 ---
 
@@ -78,9 +78,9 @@ This project uses the following Python libraries:
 - If they match your saved password, you’ll get access.
 
 ### 4. Launch an App
-- Once logged in, type the name of the app to open it.
+- Once logged in, type the name of the app in the terminal to open it.
     - Example: `Spotify`, `Notes`, `System Preferences`
-- Type `'exit'` to end the session.
+- Type `'exit'` in the terminal to end the session.
 
 ---
 
