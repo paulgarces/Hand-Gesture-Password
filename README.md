@@ -12,6 +12,7 @@ The goal was to:
 - Experiment with **gesture-based authentication logic**
 - Learn how to combine **MediaPipe, OpenCV, and real-time hand tracking**
 - Understand the challenges behind translating physical movement into digital verification
+
 This system acts as a **proof of concept** that opens up the door to more practical applications down the road — like gesture control for smart mirrors, interactive installations, or personalized device access.
 
 ---
