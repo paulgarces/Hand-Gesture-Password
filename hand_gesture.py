@@ -1,5 +1,5 @@
 # Paul S. Garces 
-# A Hand Gesture Password project
+# A Hand Gesture Password project using computer vision
 
 # downloading all the packages necessary for this project to work 
 import numpy as np
