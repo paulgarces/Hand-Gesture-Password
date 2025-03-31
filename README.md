@@ -126,7 +126,7 @@ Gesture Setup window opens
 
 → This will lead to the Login window
 
--- Enter the password again
+>> → Enter the password again
 
 Next time:
 Enter your name in the terminal : alice
@@ -137,4 +137,4 @@ Login window opens
 
 → Enter app name in the terminal: 
 
--- Spotify → Spotify opens
+>> → Spotify → Spotify opens
