@@ -60,7 +60,7 @@ This project uses the following Python libraries:
 - When 3 gestures are recorded, they’re saved as a `.json` file with the user’s name.
 
 ### d. Login Phase
-- The webcam reopens and asks the user to re-enter their 3 gestures (same order).
+- The webcam reopens and asks the user to re-enter/gesture their 3 gestures (same order).
 - The user presses **'s'** to capture each gesture.
 - The captured login gestures are compared to the saved ones.
 - If they match → “Access Granted” (green).
@@ -89,7 +89,7 @@ This project uses the following Python libraries:
 - You’ll be asked to enter your name.
 - The webcam window titled **"Gesture Setup"** will open.
 - Perform a hand gesture and press **'s'** to save — do this 3 times.
-- This will then lead you to the **Login** window to re-enter the password, which will allow you access.
+- This will then lead you to the **Login** window to re-enter/gesture the password, which will allow you access.
 - Your gesture password is saved locally in a JSON file (e.g., `alex_gesture_password.json`).
 
 ### 3. If You’re a Returning User
@@ -126,7 +126,7 @@ Gesture Setup window opens
 
 → This will lead to the Login window
 
->> → Enter the password again
+>> → Enter/gesture the password again
 
 Next time:
 Enter your name in the terminal : alice
