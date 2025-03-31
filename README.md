@@ -1,10 +1,10 @@
-# ✋ Hand Gesture Password with Multi-User Login
+# Hand Gesture Password with Multi-User Login
 
 This project is a computer vision-based password system that allows users to authenticate themselves using **hand gestures**. It uses your webcam to record a sequence of three custom gestures per user and verifies the same sequence later to allow access. If login is successful, the program allows the user to **open any app** of their choice (via terminal input).
 
 ---
 
-## 🔍 Project Motivation
+## Project Motivation
 
 While using hand gestures as a password to open apps might not serve a real-world security purpose in its current form, this project is an exploratory dive into gesture recognition using computer vision.
 
@@ -17,7 +17,7 @@ This system acts as a **proof of concept** that opens up the door to more practi
 
 ---
 
-## ⚠️ Notes & Limitations
+## Notes & Limitations
 
 - Due to macOS security restrictions, the project couldn’t automatically interact with system-level apps as easily as on Windows (e.g., opening apps using full paths or requiring permission prompts).
 - This meant app launching was kept simple using terminal commands and may not behave consistently across different macOS versions or user settings.
@@ -25,7 +25,7 @@ This system acts as a **proof of concept** that opens up the door to more practi
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 This project uses the following Python libraries:
 
@@ -38,7 +38,7 @@ This project uses the following Python libraries:
 
 ---
 
-## 🔁 How It Works
+## How It Works
 
 ### a. Multi-User Login with Gesture Password
 - At the start, the user is prompted to enter their name.
@@ -73,7 +73,7 @@ This project uses the following Python libraries:
 
 ---
 
-## ❓ How to Use
+## How to Use
 
 ### 1. Run the Script
 - Make sure you’ve installed the dependencies:
@@ -105,18 +105,18 @@ This project uses the following Python libraries:
 
 ---
 
-## 💡 Features and Ideas to Extend
+## Features and Ideas to Extend
 
-- **🔄 Retry or Reset Option**
+- **Retry or Reset Option**
     - Add an option to retry login or reset password
-- **🖥️ Custom Dashboard**
+- **Custom Dashboard**
     - Instead of terminal input, create a graphical dashboard
-- **📁 File Access Control**
+- **File Access Control**
     - Use gestures to unlock access to personal folders or files
 
 ---
 
-## ✅ Example
+## Example
 
 ```
 Enter your name in the terminal: alice
@@ -131,7 +131,3 @@ Login window opens
 → Do same 3 gestures → Access Granted
 → Enter app name in the terminal: Spotify → Spotify opens
 ```
-
----
-
-This project shows how creative computer vision and user interaction can be — gesture-based authentication is just the beginning!
