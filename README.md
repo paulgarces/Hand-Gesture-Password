@@ -118,7 +118,6 @@ This project uses the following Python libraries:
 
 ## Example
 
-```
 Enter your name in the terminal: alice
 Gesture Setup window opens
 → Press 's' for 3 custom gestures → Password saved as `alice_gesture_password.json`
@@ -130,4 +129,3 @@ Enter your name in the terminal : alice
 Login window opens
 → Do same 3 gestures → Access Granted
 → Enter app name in the terminal: Spotify → Spotify opens
-```
