@@ -1,4 +1,4 @@
-# Hand Gesture Password with Multi-User Login
+# Hand Gesture Password System
 
 This project is a computer vision-based password system that allows users to authenticate themselves using **hand gestures**. It uses your webcam to record a sequence of three custom gestures per user and verifies the same sequence later to allow access. If login is successful, the program allows the user to **open any app** of their choice (via terminal input).
 
