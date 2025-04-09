@@ -136,7 +136,6 @@ while True:
             # displaying the gesture on the frame
             cv.putText(frame, f"Gesture: {gesture}", (10, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2) 
 
-            # if the user presses 's' then it will save the gesture, but only if the length of the input sequence is less than 3
             key = cv.waitKey(1) & 0xFF
             if key == ord('s') and len(input_sequence) < 3:
                 input_sequence.append(gesture)
@@ -145,7 +144,6 @@ while True:
                 cv.waitKey(500) # waits for 500 milliseconds to avoid double saves from quick presses of 's'
     cv.imshow('Login', frame) # opens the webcam, shows the hand landmarks, and the current gesture on the screen
 
-    # Quit login phase if enough (3) gestures or user presses q
     if len(input_sequence) == 3 or cv.waitKey(1) & 0xFF == ord('q'):
         break
 
