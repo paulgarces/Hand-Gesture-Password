@@ -75,7 +75,7 @@ if not password_exists:
         results = hands.process(rgb_frame) # this takes and passes the frame which was converted to RGB to the hand tracking model
         # frame is the actual image
         if time.time() - start_time < instruction_time: # if it's still within the first 5 seconds since the app started, the start_time variable, then the instructions will be shown
-            cv.putText(frame, "Enter 3 gestures to create a password. Please press 's' after each gesture. Press 'q' to quit the application.", (10, 80), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2) 
+            cv.putText(frame, "Enter 3 gestures to create a password. Press 's' after each gesture. Press 'q' to quit the application.", (10, 80), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2) 
             # displaying the instructions on the actual frame for 5 seconds based on condition above
 
         if results.multi_hand_landmarks: # checking if any hands were detected, if so, then it will return the landmarks of the detected hands
@@ -129,7 +129,7 @@ while True:
     results = hands.process(rgb_frame) # sending the frame to the hand tracking model
 
     if not login_instruct_show and time.time() - login_time < instruction_time: # display the "instructions"
-        cv.putText(frame, "Enter your 3 gestures to login. Please press 's' after each gesture", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2) # displaying the instructions on the frame for 5 seconds
+        cv.putText(frame, "Enter your 3 gestures to login. Press 's' after each gesture. Press 'q' to quit the application", (10, 100), cv.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2) # displaying the instructions on the frame for 5 seconds
     else:
         login_instruct_show = True
 
