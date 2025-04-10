@@ -17,7 +17,9 @@ password_array = [] # array to store the 3 gestures that users did to set up the
 # it will look like this: [[1, 0, 1, 1, 1], [0, 1, 1, 0, 1], [1, 1, 1, 1, 1]], will be used to validate password
 finger_tips = [4 , 8, 12, 16, 20] # the id of the 5 finger tips, 4 is for thToe tip of the thumb, 8 is for the tip of the index finger, 12 is for the tip of  middle finger,
 # 16 is for the tip of the ring finger, 20 is for the tip of the pinky finger
-username = input("Enter your name: ").strip() # entering the users name and removing any unnecessary spaces
+time.sleep(0.4)
+print("Welcome to the Hand Gesture Password program! Please enter your name: ", end = "", flush=True)
+username = input().strip() # entering the users name and removing any unnecessary spaces
 password_file = f"{username}_gesture_password.json" # creates a user specific and custom file for their password sequences 
 # based on their username e.g. paul_gestsure_password.json : each user gets their own
 password_exists = os.path.exists(password_file) # checks if the user already has their own file with their password sequences, if not, they have to create one
@@ -59,8 +61,6 @@ def finger_tracking(landmarkers): # this function is checking which fingers are 
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
-print("Press 's' to save gesture (max 3 gestures) and 'q' to quit")
-
 if not password_exists:
     print("Press 's' to save gesture (max 3 gestures) and 'q' to quit")
 
@@ -76,7 +76,7 @@ if not password_exists:
         results = hands.process(rgb_frame) # this takes and passes the frame which was converted to RGB to the hand tracking model
         # frame is the actual image
         if time.time() - start_time < instruction_time: # if it's still within the first 5 seconds since the app started, the start_time variable, then the instructions will be shown
-            cv.putText(frame, "Enter 3 gestures to create a password. Please press 's' after each gesture", (10, 80), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2) 
+            cv.putText(frame, "Enter 3 gestures to create a password. Please press 's' after each gesture. Press 'q' to quit the application.", (10, 80), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2) 
             # displaying the instructions on the actual frame for 5 seconds based on condition above
 
         if results.multi_hand_landmarks: # checking if any hands were detected, if so, then it will return the landmarks of the detected hands
@@ -98,11 +98,20 @@ if not password_exists:
     # When everything done, release the capture
     cap.release() # turns off the webcam
     cv.destroyAllWindows() # closes the popup window
-    with open(password_file, 'w') as file:
-        json.dump(password_array, file)
+    if len(password_array) == 3:
+        with open(password_file, 'w') as file: # if the user has 3 gestures, then it will save the password array to their json file
+            json.dump(password_array, file) # saves the password array to the json file
+    else:
+        print("No password saved. The file will not be created.")
 
 # login verficication phase
 # Open webcam again
+# Make sure user completed password setup
+if not password_exists and len(password_array) != 3:
+    exit()  # user quit without saving a password — silently exit
+elif len(password_array) != 3:
+    print("Password setup incomplete. Exiting program.")
+    exit()
 
 input_sequence = [] # creating an array to store the gestures that the user will input during the login phase, will be usede to 
 # compare against the password array that was created previously
