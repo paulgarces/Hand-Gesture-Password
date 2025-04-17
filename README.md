@@ -29,7 +29,6 @@ This system acts as a **proof of concept** that opens up the door to more practi
 
 This project uses the following Python libraries:
 
-- **numpy** – for numerical operations
 - **opencv-python (cv2)** – for webcam access and video frame handling
 - **mediapipe** – for real-time hand landmark detection
 - **time** – for managing timed instructions
