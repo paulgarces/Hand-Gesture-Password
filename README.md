@@ -49,6 +49,7 @@ This project uses the following Python libraries:
 ### b. Hand Tracking and Gesture Detection
 - MediaPipe tracks 21 hand landmarks from the webcam input.
 - A custom `finger_tracking()` function identifies whether each finger (thumb, index, middle, ring, pinky) is **up** or **down**:
+    - **Please note: The system is currently calibrated to detect gestures from your right hand only.**
     - Thumb: checks the x-position difference.
     - Other fingers: check the y-position difference between fingertip and knuckle.
 - The result is a binary array like `[1, 0, 1, 1, 1]` representing the current gesture.
@@ -88,7 +89,7 @@ This project uses the following Python libraries:
 ### 2. If You’re a New User
 - You’ll be asked to enter your name.
 - The webcam window titled **"Gesture Setup"** will open.
-- Perform a hand gesture and press **'s'** to save — do this 3 times.
+- Perform a hand gesture **with your right hand** and press **'s'** to save — do this 3 times.
 - This will then lead you to the **Login** window to re-enter/gesture the password, which will allow you access.
 - Your gesture password is saved locally in a JSON file (e.g., `alex_gesture_password.json`).
 
